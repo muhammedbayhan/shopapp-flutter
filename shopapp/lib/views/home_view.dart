@@ -51,7 +51,7 @@ class _HomeViewState extends State<HomeView> {
           
             decoration: InputDecoration(
               suffixIcon: Icon(Icons.search),
-              hintText: "Search",
+              hintText: "Seacrch",
               filled: true,
             
               border: OutlineInputBorder(
