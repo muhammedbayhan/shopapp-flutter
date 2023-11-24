@@ -7,6 +7,7 @@ import 'package:shopapp/views/products_view.dart';
 import 'package:shopapp/widgets/products.dart';
 import 'package:shopapp/widgets/sales.dart';
 import 'package:card_swiper/card_swiper.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'package:page_transition/page_transition.dart';
 
@@ -20,11 +21,22 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   List<ProductModel>? _products;
   final ApiHandler _apiHandler = ApiHandler();
+
+  bool shimmer=true;
+
   @override
   void initState() {
     fetchProduct();
+loading();
     super.initState();
   }
+
+void loading(){
+  
+    Future.delayed(Duration(seconds: 3)).then((value) => 
+     setState(() {shimmer=false;})
+    );
+}
 
   Future<void> fetchProduct() async {
     _products = await _apiHandler.fetchProduct();
@@ -48,14 +60,11 @@ class _HomeViewState extends State<HomeView> {
         padding: const EdgeInsets.all(8.0),
         child: Column(children: [
           TextField(
-          
             decoration: InputDecoration(
               suffixIcon: Icon(Icons.search),
-              hintText: "Seacrch",
+              hintText: "Search",
               filled: true,
-            
               border: OutlineInputBorder(
-                
                 borderRadius: BorderRadius.circular(10),
               ),
               focusedBorder: OutlineInputBorder(
@@ -116,11 +125,20 @@ class _HomeViewState extends State<HomeView> {
                       childAspectRatio: 3 / 4),
                   itemBuilder: (context, index) {
                     return GestureDetector(
-                      child: Products(
-                        imageUrl: "${_products?[index].image}",
-                        title: "${_products?[index].title}",
-                        price: "${_products?[index].price}",
-                      ),
+                      child:shimmer? Shimmer.fromColors(
+   baseColor: Colors.black12,
+                    highlightColor: Colors.white,
+    period: Duration(milliseconds: 250),
+                        child: Products(
+                          imageUrl: "${_products?[index].image}",
+                          title: "${_products?[index].title}",
+                          price: "${_products?[index].price}",
+                        ),
+                      ):Products(
+                          imageUrl: "${_products?[index].image}",
+                          title: "${_products?[index].title}",
+                          price: "${_products?[index].price}",
+                        ),
                       onTap: () {
                         Navigator.push(
                             context,
@@ -128,9 +146,10 @@ class _HomeViewState extends State<HomeView> {
                                 type: PageTransitionType.fade,
                                 child: ProductDetail(
                                     imageUrl: "${_products?[index].image}",
-                                    title:  "${_products?[index].title}",
-                                    price:  "${_products?[index].price}",
-                                    desc:  "${_products?[index].description}")));
+                                    title: "${_products?[index].title}",
+                                    price: "${_products?[index].price}",
+                                    
+                                    desc: "${_products?[index].description}")));
                       },
                     );
                   })),

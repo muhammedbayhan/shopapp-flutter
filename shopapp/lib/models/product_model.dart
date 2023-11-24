@@ -5,7 +5,7 @@ class ProductModel {
   String? description;
   String? category;
   String? image;
-  Rating? rating;
+  var rating;
 
   ProductModel(
       {this.id,
